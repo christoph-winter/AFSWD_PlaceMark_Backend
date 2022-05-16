@@ -30,6 +30,8 @@ suite("User API tests", () => {
     assert.deepEqual(user, returnedUser1);
     const returnedUser2 = await db.userStore.getUserByEmail(user.email);
     assert.deepEqual(user, returnedUser2);
+    const returnedUser3 = await db.userStore.getUserByUsername(user.username);
+    assert.deepEqual(user, returnedUser3);
   });
   test("delete One User - success", async () => {
     await db.userStore.deleteUserById(testUsers[0]._id);

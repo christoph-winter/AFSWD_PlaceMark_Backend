@@ -22,6 +22,10 @@ export const userMongoStore = {
     const user = await User.findOne({ email: email }).lean();
     return user;
   },
+  async getUserByUsername(username) {
+    const user = await User.findOne({ username: username }).lean();
+    return user;
+  },
   async deleteUserById(id) {
     try {
       await User.deleteOne({ _id: id });
