@@ -5,6 +5,16 @@ export const michael = {
   email: "michael@the-office.com",
   password: "secret",
 };
+export const jahnstadion = {
+  title: "Jahnstadion Regensburg",
+  description: "Soccer stadium for ",
+  latitude: 48.99097490003941,
+  longitude: 12.107298727065935,
+};
+export const arena = {
+  title: "Arena",
+  description: "Location used for theatre, musical performances or sporting events",
+};
 
 export const testUsers = [
   {
@@ -27,5 +37,33 @@ export const testUsers = [
     username: "jim123",
     email: "jim@the-office.com",
     password: "secret",
+  },
+];
+export const testPOICategories = [
+  {
+    title: "Music Venues",
+    description: "Location used for a concert or musical performance",
+  },
+  {
+    title: "Sports Stadium",
+    description: "Location used for major sporting events",
+  },
+  {
+    title: "Arena",
+    description: "Location used for theatre, musical performances or sporting events",
+  },
+];
+export const testPOIs = [
+  {
+    title: "Jahnstadion Regensburg",
+    description: "Soccer stadium for ",
+    latitude: 48.99097490003941,
+    longitude: 12.107298727065935,
+  },
+  {
+    title: "Donau-Arena",
+    description: "",
+    latitude: 48.99097490003941,
+    longitude: 12.107298727065935,
   },
 ];
