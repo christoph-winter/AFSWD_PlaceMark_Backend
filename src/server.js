@@ -1,18 +1,28 @@
 import Hapi from "@hapi/hapi";
-import path from "path";
 
+import dotenv from "dotenv";
+import path from "path";
 import { fileURLToPath } from "url";
+import { db } from "./models/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const result = dotenv.config();
+if (result.error) {
+  console.log(result.error.message);
+}
+
 async function init() {
   const server = Hapi.server({
-    port: 3000,
-    host: "localhost",
+    port: process.env.PORT || 4000,
+    routes: { cors: true },
   });
+
+  db.init("mongo");
+
   await server.start();
-  console.log("Server running on %s", server.info.uri);
+  console.log(`Server running at: ${server.info.uri}`);
 }
 
 process.on("unhandledRejection", (err) => {
@@ -20,4 +30,4 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
-init();
+await init();
