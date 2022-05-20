@@ -73,6 +73,23 @@ suite("POI Model tests", () => {
     assert.equal(returnedPOI3.latitude, updatedLat);
     assert.equal(returnedPOI3.longitude, updatedLong);
   });
+  test("update One POI - success", async () => {
+    const newPOI = await db.poiStore.addPOI(jahnstadion, michaelUser._id, [arenaCategory._id]);
+    const updatedDesc = "new test description";
+    await db.poiStore.updatePOIDescription("bad id", updatedDesc);
+    const returnedPOI1 = await db.poiStore.getPOIById(newPOI._id);
+    assert.equal(returnedPOI1.description, newPOI.description);
+    const updatedTitle = "new test title";
+    await db.poiStore.updatePOITitle("not valid", updatedTitle);
+    const returnedPOI2 = await db.poiStore.getPOIById(newPOI._id);
+    assert.equal(returnedPOI2.title, newPOI.title);
+    const updatedLat = 3.0;
+    const updatedLong = 4.0;
+    await db.poiStore.updatePOILocation("bad id", updatedLat, updatedLong);
+    const returnedPOI3 = await db.poiStore.getPOIById(newPOI._id);
+    assert.equal(returnedPOI3.latitude, newPOI.latitude);
+    assert.equal(returnedPOI3.longitude, newPOI.longitude);
+  });
   teardown(async () => {
     await db.userStore.deleteAll();
     await db.poiCategoryStore.deleteAllCategories();

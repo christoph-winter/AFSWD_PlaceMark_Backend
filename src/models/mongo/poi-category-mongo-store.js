@@ -21,7 +21,13 @@ export const POICategoryMongoStore = {
     const categoryObj = await newCategory.save();
     return this.getCategoryById(categoryObj._id);
   },
-
+  async updateCategoryDescription(id, description) {
+    try {
+      await POICategory.updateOne({ _id: id }, { description: description });
+    } catch (e) {
+      console.log("bad id");
+    }
+  },
   async deleteCategoryById(id) {
     try {
       await POICategory.deleteOne({ _id: id });

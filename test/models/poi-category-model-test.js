@@ -44,4 +44,11 @@ suite("POI Category Model tests", () => {
     const allPOICategories = await db.poiCategoryStore.getAllCategories();
     assert.equal(testPOICategories.length, allPOICategories.length);
   });
+  test("update One Category", async () => {
+    const newCategory = await db.poiCategoryStore.addCategory(arena);
+    const newDesc = "new test description";
+    await db.poiCategoryStore.updateCategoryDescription(newCategory._id, newDesc);
+    const returnedCategory = await db.poiCategoryStore.getCategoryById(newCategory._id);
+    assert.equal(returnedCategory.description, newDesc);
+  });
 });
