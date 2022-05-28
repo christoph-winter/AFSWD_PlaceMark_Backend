@@ -26,7 +26,7 @@ export const seedData = {
   categories: {
     _model: "POICategory",
     musicvenue: {
-      title: "Music Venues",
+      title: "Music Venue",
       description: "Location used for a concert or musical performance",
     },
     sportsstadium: {
@@ -47,7 +47,7 @@ export const seedData = {
       latitude: 48.99097490003941,
       longitude: 12.107298727065935,
       categories: ["->categories.sportsstadium"],
-      creatorid: "->users.jim",
+      creator: "->users.jim",
     },
   },
 };

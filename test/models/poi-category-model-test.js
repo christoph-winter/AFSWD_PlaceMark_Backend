@@ -26,7 +26,9 @@ suite("POI Category Model tests", () => {
   });
   test("get a Category - success", async () => {
     const POICategory = await db.poiCategoryStore.addCategory(arena);
-    const returnedPOICategory = await db.poiCategoryStore.getCategoryById(POICategory._id);
+    let returnedPOICategory = await db.poiCategoryStore.getCategoryById(POICategory._id);
+    assert.deepEqual(POICategory, returnedPOICategory);
+    returnedPOICategory = await db.poiCategoryStore.getCategoryByTitle(POICategory.title);
     assert.deepEqual(POICategory, returnedPOICategory);
   });
   test("delete One Category - success", async () => {

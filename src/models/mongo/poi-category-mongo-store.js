@@ -15,6 +15,15 @@ export const POICategoryMongoStore = {
     }
     return null;
   },
+  async getCategoryByTitle(title) {
+    try {
+      const category = await POICategory.findOne({ title: title }).lean();
+      return category;
+    } catch (e) {
+      console.log("bad id");
+    }
+    return null;
+  },
 
   async addCategory(category) {
     const newCategory = new POICategory(category);

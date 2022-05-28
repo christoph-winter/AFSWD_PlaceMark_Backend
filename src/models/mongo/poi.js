@@ -13,7 +13,7 @@ const POISchema = new Schema({
       ref: "POICategory",
     },
   ],
-  creatorid: {
+  creator: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },

@@ -1,0 +1,47 @@
+<form action="/dashboard/addvenue" method="POST">
+    <div class="field">
+        <label class="label">Venue Name</label>
+        <input class="input" type="text" placeholder="Enter name of venue..." name="title">
+    </div>
+    <div class="field">
+        <label class="label">Description</label>
+        <div class="control">
+            <textarea name="description" class="textarea" placeholder="Enter description..."></textarea>
+        </div>
+    </div>
+    <div class="field is-horizontal">
+        <div class="field-body">
+            <div class="field">
+                <label class="label">Latitude</label>
+                <p class="control has-icons-left">
+                    <input name="latitude" class="input" type="text" placeholder="Latitude...">
+                    <span class="icon is-small is-left">
+                <i class="fa-solid fa-location-crosshairs"></i>
+            </span>
+                </p>
+            </div>
+            <div class="field">
+                <label class="label">Longitude</label>
+                <p class="control has-icons-left">
+                    <input name="longitude" class="input" type="text" placeholder="Longitude...">
+                    <span class="icon is-small is-left">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">Category</label>
+        <div class="control">
+            <div class="select is-multiple" >
+                <select multiple name="categories">
+                    {{#each categories}}
+                        <option value="{{_id}}">{{title}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+    </div>
+    <button class="button is-link">Add Venue</button>
+</form>

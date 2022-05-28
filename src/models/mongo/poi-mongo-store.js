@@ -2,18 +2,18 @@ import { POI } from "./poi.js";
 
 export const POIMongoStore = {
   async getAllPOIs() {
-    const poi = await POI.find().lean();
+    const poi = await POI.find().lean().populate("creator", "-password").populate("categories");
     return poi;
   },
   async getPOIById(id) {
     if (id) {
-      const poi = await POI.findOne({ _id: id }).lean();
+      const poi = await POI.findOne({ _id: id }).lean().populate("creator", "-password").populate("categories");
       return poi;
     }
     return null;
   },
   async addPOI(poi, creatorId, categories) {
-    poi.creatorid = creatorId;
+    poi.creator = creatorId;
     poi.categories = categories;
     const newPOI = new POI(poi);
     const poiObj = await newPOI.save();
