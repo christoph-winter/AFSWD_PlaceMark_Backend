@@ -1,0 +1,79 @@
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/dashboard" width="170" height="35">
+            <p class="title">
+            <i class="fa-solid fa-earth-americas" style="color:rgb(201, 6, 6)"></i>
+            FindVenue
+            </p>
+        </a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/dashboard">
+                Venues
+            </a>
+
+            <a class="navbar-item" href="/dashboard/addvenue">
+                Add New Venue
+            </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    More
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="/profile">
+                        Profile
+                    </a>
+                    <a class="navbar-item">
+                        About
+                    </a>
+                    <hr class="navbar-divider">
+                    <a class="navbar-item">
+                        Report an issue
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    <div class="navbar-end">
+        <div class="navbar-item is-vcentered has-text-centered">
+            {{#if user}}
+                <div class="column">
+                <p class="title is-6">
+                    <a href="/profile">
+                    <i class="fa-solid fa-user-large" style="color: rgb(82,82,82)"></i>
+                    {{user.username}}
+                    </a>
+                </p>
+                <p class="subtitle is-5  ">
+                    <form action="/logout" method="POST">
+                        <button class="button is-info is-inverted is-small">
+                            Log out
+                        </button>
+                    </form>
+                </p>
+                </div>
+            {{else}}
+
+
+                <div class="buttons">
+                    <a class="button is-link is-light is-rounded" href="/login">
+                        Log in
+                    </a>
+                    <a class="button is-light is-rounded" href="/signup">
+                        <strong>Sign up</strong>
+                    </a>
+
+                </div>
+            {{/if}}
+        </div>
+    </div>
+    </div>
+</nav>

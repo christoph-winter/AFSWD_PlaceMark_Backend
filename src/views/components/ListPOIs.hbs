@@ -1,0 +1,51 @@
+{{#each pois}}
+    <div class="box box-link-hover-shadow">
+        <h2 class="title" style="color:rgb(201, 6, 6)">
+            {{title}}
+        </h2>
+        <h3 class="subtitle heading">
+            {{#each categories}}
+                <strong>[{{title}}] </strong>
+            {{/each}}
+        </h3>
+        <div class="columns">
+        <div class="column">
+            <p class="title is-6">Description:</p>
+
+                {{description}}
+
+        </div>
+        </div>
+        <div class="columns mt-2">
+            <div class="column">
+                <p class="title is-6">Latitude:</p>
+                {{latitude}}
+            </div>
+            <div class="column">
+                <p class="title is-6">Longitude:</p>
+                {{longitude}}
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <p class="title is-6">Author:</p>
+                {{creator.username}}
+            </div>
+
+            {{#if iseditable}}
+                <div class="column">
+                    <a href="/dashboard/{{_id}}">
+                        <button class="button is-pulled-right">
+                    <span class="icon is-small">
+                        <i class="fa-solid fa-pen"></i>
+                    </span>
+                        </button>
+                    </a>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+
+
+
+{{/each}}

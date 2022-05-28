@@ -1,0 +1,10 @@
+{{#if notifications}}
+    <div class="notification" id="notifyBox">
+        <button class="delete" type="button" onclick="document.getElementById('notifyBox').style.display='none'"></button>
+        <ul>
+            {{#each notifications}}
+                <li>{{message}}</li>
+            {{/each}}
+        </ul>
+    </div>
+{{/if}}
