@@ -1,4 +1,5 @@
 import { db } from "../models/db.js";
+import { POISpec } from "../models/joi-schemas.js";
 
 export const poiController = {
   index: {
@@ -40,6 +41,17 @@ export const poiController = {
     },
   },
   addPOI: {
+    validate: {
+      payload: POISpec,
+      options: { abortEarly: false },
+      failAction: async function (request, h, error) {
+        const allCategories = await db.poiCategoryStore.getAllCategories();
+        return h
+          .view("AddNewPOI", { error: { details: error.details }, categories: allCategories })
+          .takeover()
+          .code(400);
+      },
+    },
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
       const newPOI = {

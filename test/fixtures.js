@@ -7,7 +7,7 @@ export const michael = {
 };
 export const jahnstadion = {
   title: "Jahnstadion Regensburg",
-  description: "Soccer stadium for ",
+  description: "Homepage: https://www.jahnstadion-regensburg.de/",
   latitude: 48.99097490003941,
   longitude: 12.107298727065935,
 };

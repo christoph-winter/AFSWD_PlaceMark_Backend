@@ -44,4 +44,18 @@
         </div>
     </div>
     <button class="button is-link">Add Venue</button>
+
+    {{#if error}}
+        <div id="errorBox" class="notification is-danger">
+            <button class="delete" type="button"
+                    onclick="document.getElementById('errorBox').style.display='none'"></button>
+            Incorrect input.
+            <ul>
+                {{#each error.details}}
+                    <li>{{message}}</li>
+                {{/each}}
+            </ul>
+
+        </div>
+    {{/if}}
 </form>

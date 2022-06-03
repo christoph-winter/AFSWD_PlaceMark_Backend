@@ -26,12 +26,18 @@
   <div class="field is-grouped">
     <button class="button is-link">Sign Up</button>
   </div>
+
     {{#if error}}
         <div id="errorBox" class="notification is-danger">
-            <button class="delete" type="button" onclick="document.getElementById('errorBox').style.display='none'"></button>
-                    Login failed. {{error.message}}
-            </button>
-        </div>
+            <button class="delete" type="button"
+                    onclick="document.getElementById('errorBox').style.display='none'"></button>
+            Sign up failed!
+            <ul>
+                {{#each error.details}}
+                    <li>{{message}}</li>
+                {{/each}}
+            </ul>
 
+        </div>
     {{/if}}
 </form>
