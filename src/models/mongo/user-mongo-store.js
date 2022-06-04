@@ -26,11 +26,15 @@ export const userMongoStore = {
     const user = await User.findOne({ username: username }).lean();
     return user;
   },
+  async updateUser(id, newValues) {
+    const user = await User.findOneAndUpdate({ _id: id }, { $set: newValues }, { new: true, upsert: false });
+    return user;
+  },
   async deleteUserById(id) {
     try {
       await User.deleteOne({ _id: id });
     } catch (error) {
-      console.log("bad id");
+      console.log(error.message);
     }
   },
   async deleteAll() {

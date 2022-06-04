@@ -50,4 +50,19 @@ suite("User Model tests", () => {
     const allUsers = await db.userStore.getAllUsers();
     assert.equal(testUsers.length, allUsers.length);
   });
+  test("update One User - success", async () => {
+    const beforeUpdate = await db.userStore.getUserById(testUsers[0]._id);
+    const updatedUser = await db.userStore.updateUser(testUsers[0]._id, { firstname: "Angela" });
+    assert.notEqual(beforeUpdate.firstname, updatedUser.firstname);
+    assert.ok(beforeUpdate._id.equals(updatedUser._id));
+    assert.equal(beforeUpdate.email, updatedUser.email);
+    assert.equal(beforeUpdate.lastname, updatedUser.lastname);
+  });
+  test("update One User - not exists", async () => {
+    const returnedUser = await db.userStore.addUser(michael);
+    await db.userStore.deleteUserById(returnedUser._id);
+    assert.isNull(await db.userStore.getUserById(returnedUser._id));
+    const updatedUser = await db.userStore.updateUser(returnedUser._id, { firstname: "Toby" });
+    assert.isNull(updatedUser);
+  });
 });
