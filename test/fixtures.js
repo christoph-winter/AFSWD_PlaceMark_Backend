@@ -62,7 +62,7 @@ export const testPOIs = [
   },
   {
     title: "Donau-Arena",
-    description: "",
+    description: "The arena opened in 2001 and holds 4,936 people. It is primarily used for ice hockey.",
     latitude: 48.99097490003941,
     longitude: 12.107298727065935,
   },

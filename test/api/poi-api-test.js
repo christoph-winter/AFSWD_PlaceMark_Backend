@@ -1,16 +1,21 @@
 import { assert } from "chai";
 import { appService } from "./app-service.js";
-import { arena, jahnstadion, testPOIs } from "../fixtures.js";
+import { arena, jahnstadion, michael, testPOIs } from "../fixtures.js";
 import { assertSubset } from "../test-utils.js";
 
 const POIs = new Array(testPOIs.length);
 let arenaCategory;
+let michaelUser;
 suite("POI API tests", () => {
   setup(async () => {
+    await appService.deleteAllUsers();
+    michaelUser = await appService.createUser(michael);
     await appService.deleteAllCategories();
     arenaCategory = await appService.createCategory(arena);
     await appService.deleteAllPOIs();
     for (let i = 0; i < POIs.length; i += 1) {
+      testPOIs[i].creator = michaelUser._id;
+      testPOIs[i].categories = [arenaCategory._id];
       // eslint-disable-next-line no-await-in-loop
       POIs[i] = await appService.createPOI(testPOIs[i]);
     }
@@ -18,8 +23,11 @@ suite("POI API tests", () => {
   teardown(async () => {});
 
   test("create a new POI", async () => {
-    const newPOI = await appService.createPOI(jahnstadion);
-    assertSubset(jahnstadion, newPOI);
+    const POIWithCatAndUser = jahnstadion;
+    POIWithCatAndUser.categories = [arenaCategory._id];
+    POIWithCatAndUser.creator = michaelUser._id;
+    const newPOI = await appService.createPOI(POIWithCatAndUser);
+    assertSubset(POIWithCatAndUser, newPOI);
     assert.isDefined(newPOI._id);
   });
   test("delete all POIs", async () => {

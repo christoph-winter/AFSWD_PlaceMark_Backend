@@ -13,4 +13,6 @@ export const webRoutes = [
   { method: "POST", path: "/dashboard/addvenue", config: poiController.addPOI },
   { method: "GET", path: "/profile", config: accountsController.profile },
   { method: "GET", path: "/dashboard/{id}", config: poiController.showEditPOI },
+
+  { method: "GET", path: "/{param*}", handler: { directory: { path: "./public" } }, options: { auth: false } },
 ];

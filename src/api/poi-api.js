@@ -1,8 +1,10 @@
 import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
-import { POISpec } from "../models/joi-schemas.js";
+import { IdSpec, POIArraySpec, POISpec, POISpecPlus, POISpecUpdate } from "../models/joi-schemas.js";
+import { validationErrorInput, validationErrorOutput } from "./logger.js";
 
 export const poiApi = {
+  // TODO: securing api
   find: {
     auth: false,
     handler: async function (request, h) {
@@ -13,6 +15,10 @@ export const poiApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Get all POIs",
+    notes: "Returns all POIs.",
+    response: { schema: POIArraySpec, failAction: validationErrorOutput },
   },
   findOne: {
     auth: false,
@@ -28,6 +34,11 @@ export const poiApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Find a POI",
+    notes: "Returns a POI.",
+    validate: { params: { id: IdSpec }, failAction: validationErrorInput },
+    response: { schema: POISpecPlus, failAction: validationErrorOutput },
   },
   create: {
     auth: false,
@@ -40,11 +51,16 @@ export const poiApi = {
         if (newPOI) {
           return h.response(newPOI).code(201);
         }
-        return Boom.badImplementation("error creating new POI");
+        return Boom.badImplementation("Error creating new POI");
       } catch (e) {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Create POI",
+    notes: "Consumes specified key-value pairs for creation of a POI. Produces created POI object.",
+    validate: { payload: POISpec, failAction: validationErrorInput },
+    response: { schema: POISpecPlus, failAction: validationErrorOutput },
   },
   deleteOne: {
     auth: false,
@@ -60,6 +76,9 @@ export const poiApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Deletes one POI",
+    validate: { params: { id: IdSpec }, failAction: validationErrorInput },
   },
   deleteAll: {
     auth: false,
@@ -72,6 +91,8 @@ export const poiApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Delete all POIs",
   },
   updateOne: {
     auth: false,
@@ -86,5 +107,10 @@ export const poiApi = {
         return Boom.serverUnavailable("Database error");
       }
     },
+    tags: ["api"],
+    description: "Update one POI",
+    notes: "Consumes specified key-value pairs for POI update. Produces updated POI object.",
+    validate: { params: { id: IdSpec }, payload: POISpecUpdate, failAction: validationErrorInput },
+    response: { schema: POISpecPlus, failAction: validationErrorOutput },
   },
 };

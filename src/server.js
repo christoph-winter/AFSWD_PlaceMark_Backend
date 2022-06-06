@@ -1,3 +1,4 @@
+import Inert from "@hapi/inert";
 import Hapi from "@hapi/hapi";
 import Vision from "@hapi/vision";
 import Handlebars from "handlebars";
@@ -5,6 +6,7 @@ import Cookie from "@hapi/cookie";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import HapiSwagger from "hapi-swagger";
 import Joi from "joi";
 import { db } from "./models/db.js";
 import { webRoutes } from "./web-routes.js";
@@ -19,13 +21,28 @@ if (result.error) {
   console.log(result.error.message);
 }
 
+const swaggerOptions = {
+  info: {
+    title: "POI App API",
+    version: "0.1",
+  },
+};
 async function init() {
   const server = Hapi.server({
     port: process.env.PORT || 4000,
     routes: { cors: true },
   });
+  await server.register(Inert);
   await server.register(Vision);
   await server.register(Cookie);
+  await server.register([
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions,
+    },
+  ]);
   server.validator(Joi);
   server.views({
     engines: {

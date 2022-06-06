@@ -1,5 +1,7 @@
 import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
+import { IdSpec, POICategoryArray, POICategorySpec, POICategorySpecPlus, POICategorySpecUpdate } from "../models/joi-schemas.js";
+import { validationErrorInput, validationErrorOutput } from "./logger.js";
 
 export const poiCategoryApi = {
   find: {
@@ -12,6 +14,10 @@ export const poiCategoryApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Get all POICategories",
+    notes: "Returns all POICategories.",
+    response: { schema: POICategoryArray, failAction: validationErrorOutput },
   },
   findOne: {
     auth: false,
@@ -26,6 +32,11 @@ export const poiCategoryApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Find a POICategory",
+    notes: "Returns a POICategory.",
+    validate: { params: { id: IdSpec }, failAction: validationErrorInput },
+    response: { schema: POICategorySpecPlus, failAction: validationErrorOutput },
   },
   create: {
     auth: false,
@@ -36,11 +47,16 @@ export const poiCategoryApi = {
         if (newCategory) {
           return h.response(newCategory).code(201);
         }
-        return Boom.badImplementation("error creating new Category");
+        return Boom.badImplementation("Error creating new Category");
       } catch (e) {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Create POICategory",
+    notes: "Consumes specified key-value pairs for creation of a POICategory. Produces created POICategory.",
+    validate: { payload: POICategorySpec, failAction: validationErrorInput },
+    response: { schema: POICategorySpecPlus, failAction: validationErrorOutput },
   },
   deleteOne: {
     auth: false,
@@ -56,6 +72,9 @@ export const poiCategoryApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Deletes one POICategory",
+    validate: { params: { id: IdSpec }, failAction: validationErrorInput },
   },
   deleteAll: {
     auth: false,
@@ -68,6 +87,8 @@ export const poiCategoryApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api"],
+    description: "Deletes all POICategories",
   },
   updateOne: {
     auth: false,
@@ -83,5 +104,10 @@ export const poiCategoryApi = {
         return Boom.serverUnavailable("Database error");
       }
     },
+    tags: ["api"],
+    description: "Update one POICategory",
+    notes: "Consumes specified key-value pairs for POICategory update. Produces updated POICategory object.",
+    validate: { params: { id: IdSpec }, payload: POICategorySpecUpdate, failAction: validationErrorInput },
+    response: { schema: POICategorySpecPlus, failAction: validationErrorOutput },
   },
 };
