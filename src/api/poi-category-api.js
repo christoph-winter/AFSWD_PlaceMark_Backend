@@ -5,7 +5,9 @@ import { validationErrorInput, validationErrorOutput } from "./logger.js";
 
 export const poiCategoryApi = {
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const categories = await db.poiCategoryStore.getAllCategories();
@@ -20,7 +22,9 @@ export const poiCategoryApi = {
     response: { schema: POICategoryArray, failAction: validationErrorOutput },
   },
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     async handler(request, h) {
       try {
         const category = await db.poiCategoryStore.getCategoryById(request.params.id);
@@ -39,7 +43,9 @@ export const poiCategoryApi = {
     response: { schema: POICategorySpecPlus, failAction: validationErrorOutput },
   },
   create: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const category = request.payload;
@@ -59,7 +65,9 @@ export const poiCategoryApi = {
     response: { schema: POICategorySpecPlus, failAction: validationErrorOutput },
   },
   deleteOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const category = await db.poiCategoryStore.getCategoryById(request.params.id);
@@ -77,7 +85,9 @@ export const poiCategoryApi = {
     validate: { params: { id: IdSpec }, failAction: validationErrorInput },
   },
   deleteAll: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         await db.poiCategoryStore.deleteAllCategories();
@@ -91,7 +101,9 @@ export const poiCategoryApi = {
     description: "Deletes all POICategories",
   },
   updateOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const category = await db.poiCategoryStore.updateCategory(request.params.id, request.payload);

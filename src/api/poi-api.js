@@ -6,7 +6,9 @@ import { validationErrorInput, validationErrorOutput } from "./logger.js";
 export const poiApi = {
   // TODO: securing api
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const pois = await db.poiStore.getAllPOIs();
@@ -21,7 +23,9 @@ export const poiApi = {
     response: { schema: POIArraySpec, failAction: validationErrorOutput },
   },
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     async handler(request, h) {
       try {
         const poi = await db.poiStore.getPOIById(request.params.id);
@@ -41,7 +45,9 @@ export const poiApi = {
     response: { schema: POISpecPlus, failAction: validationErrorOutput },
   },
   create: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const poi = request.payload;
@@ -63,7 +69,9 @@ export const poiApi = {
     response: { schema: POISpecPlus, failAction: validationErrorOutput },
   },
   deleteOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const poi = await db.poiStore.getPOIById(request.params.id);
@@ -81,7 +89,9 @@ export const poiApi = {
     validate: { params: { id: IdSpec }, failAction: validationErrorInput },
   },
   deleteAll: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         await db.poiStore.deleteAll();
@@ -95,7 +105,9 @@ export const poiApi = {
     description: "Delete all POIs",
   },
   updateOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const poi = await db.poiStore.updatePOI(request.params.id, request.payload);

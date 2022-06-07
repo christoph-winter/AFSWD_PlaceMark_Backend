@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { appService } from "./app-service.js";
-import { arena, jahnstadion, michael, testPOIs } from "../fixtures.js";
+import { arena, jahnstadion, michael, michaelCredentials, ryan, ryanCredentials, testPOIs } from "../fixtures.js";
 import { assertSubset } from "../test-utils.js";
 
 const POIs = new Array(testPOIs.length);
@@ -8,8 +8,12 @@ let arenaCategory;
 let michaelUser;
 suite("POI API tests", () => {
   setup(async () => {
+    await appService.clearAuth();
+    await appService.createUser(ryan);
+    await appService.authenticate(ryanCredentials);
     await appService.deleteAllUsers();
     michaelUser = await appService.createUser(michael);
+    await appService.authenticate(michaelCredentials);
     await appService.deleteAllCategories();
     arenaCategory = await appService.createCategory(arena);
     await appService.deleteAllPOIs();
@@ -20,7 +24,12 @@ suite("POI API tests", () => {
       POIs[i] = await appService.createPOI(testPOIs[i]);
     }
   });
-  teardown(async () => {});
+  teardown(async () => {
+    await appService.clearAuth();
+    await appService.createUser(ryan);
+    await appService.authenticate(ryanCredentials);
+    await appService.deleteAllUsers();
+  });
 
   test("create a new POI", async () => {
     const POIWithCatAndUser = jahnstadion;

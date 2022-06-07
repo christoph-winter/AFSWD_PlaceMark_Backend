@@ -1,18 +1,29 @@
 import { assert } from "chai";
 import { appService } from "./app-service.js";
-import { arena, testPOICategories } from "../fixtures.js";
+import { arena, michael, michaelCredentials, ryan, ryanCredentials, testPOICategories } from "../fixtures.js";
 import { assertSubset } from "../test-utils.js";
 
 const categories = new Array(testPOICategories.length);
 suite("POI Category API tests", () => {
   setup(async () => {
+    await appService.clearAuth();
+    await appService.createUser(ryan);
+    await appService.authenticate(ryanCredentials);
     await appService.deleteAllCategories();
+    await appService.deleteAllUsers();
+    await appService.createUser(michael);
+    await appService.authenticate(michaelCredentials);
     for (let i = 0; i < categories.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       categories[i] = await appService.createCategory(testPOICategories[i]);
     }
   });
-  teardown(async () => {});
+  teardown(async () => {
+    await appService.clearAuth();
+    await appService.createUser(ryan);
+    await appService.authenticate(ryanCredentials);
+    await appService.deleteAllUsers();
+  });
 
   test("create a new Category", async () => {
     const newCategory = await appService.createCategory(arena);

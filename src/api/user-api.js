@@ -1,11 +1,38 @@
 import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
-import { IdSpec, POICategorySpecPlus, UserArraySpec, UserSpec, UserSpecPlus, UserSpecUpdate } from "../models/joi-schemas.js";
+import { IdSpec, JwtAuth, POICategorySpecPlus, UserArraySpec, UserCredentialsSpec, UserSpec, UserSpecPlus, UserSpecUpdate } from "../models/joi-schemas.js";
 import { validationErrorInput, validationErrorOutput } from "./logger.js";
+import { createToken } from "./jwt-utils.js";
 
 export const userApi = {
-  find: {
+  authenticate: {
     auth: false,
+    handler: async function (request, h) {
+      try {
+        const user = await db.userStore.getUserByEmail(request.payload.email);
+        if (!user) {
+          return Boom.unauthorized("User not found");
+        }
+        if (user.password !== request.payload.password) {
+          return Boom.unauthorized("Invalid password");
+        }
+
+        const token = createToken(user);
+        return h.response({ success: true, token: token }).code(201);
+      } catch (err) {
+        return Boom.serverUnavailable("Database Error");
+      }
+    },
+    tags: ["api"],
+    description: "Authenticate  a User",
+    notes: "If user has valid email/password, create and return a JWT token",
+    validate: { payload: UserCredentialsSpec, failAction: validationErrorInput },
+    response: { schema: JwtAuth, failAction: validationErrorOutput },
+  },
+  find: {
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const users = await db.userStore.getAllUsers();
@@ -20,7 +47,9 @@ export const userApi = {
     response: { schema: UserArraySpec, failAction: validationErrorOutput },
   },
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const user = await db.userStore.getUserById(request.params.id);
@@ -67,7 +96,9 @@ export const userApi = {
     response: { schema: UserSpecPlus, failAction: validationErrorOutput },
   },
   deleteOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         await db.userStore.deleteUserById(request.params.id);
@@ -82,7 +113,9 @@ export const userApi = {
     validate: { params: { id: IdSpec }, failAction: validationErrorInput },
   },
   deleteAll: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         await db.userStore.deleteAll();
@@ -95,7 +128,9 @@ export const userApi = {
     description: "Deletes all Users",
   },
   updateOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const user = request.payload;

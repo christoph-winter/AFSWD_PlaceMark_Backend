@@ -5,6 +5,21 @@ export const michael = {
   email: "michael@the-office.com",
   password: "secret",
 };
+export const michaelCredentials = {
+  email: "michael@the-office.com",
+  password: "secret",
+};
+export const ryan = {
+  firstname: "Ryan",
+  lastname: "Howard",
+  username: "ryan321",
+  email: "ryan@the-office.com",
+  password: "secret",
+};
+export const ryanCredentials = {
+  email: "ryan@the-office.com",
+  password: "secret",
+};
 export const jahnstadion = {
   title: "Jahnstadion Regensburg",
   description: "Homepage: https://www.jahnstadion-regensburg.de/",
