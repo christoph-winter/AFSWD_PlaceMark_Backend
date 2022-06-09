@@ -47,16 +47,20 @@ export const poiCategoryApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        const category = request.payload;
-        const newCategory = await db.poiCategoryStore.addCategory(category);
-        if (newCategory) {
-          return h.response(newCategory).code(201);
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin) {
+        try {
+          const category = request.payload;
+          const newCategory = await db.poiCategoryStore.addCategory(category);
+          if (newCategory) {
+            return h.response(newCategory).code(201);
+          }
+          return Boom.badImplementation("Error creating new Category");
+        } catch (e) {
+          return Boom.serverUnavailable("Database Error");
         }
-        return Boom.badImplementation("Error creating new Category");
-      } catch (e) {
-        return Boom.serverUnavailable("Database Error");
       }
+      return Boom.forbidden("Insufficient user privileges");
     },
     tags: ["api"],
     description: "Create POICategory",
@@ -69,16 +73,20 @@ export const poiCategoryApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        const category = await db.poiCategoryStore.getCategoryById(request.params.id);
-        if (!category) {
-          return Boom.notFound("No Category with this id");
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin) {
+        try {
+          const category = await db.poiCategoryStore.getCategoryById(request.params.id);
+          if (!category) {
+            return Boom.notFound("No Category with this id");
+          }
+          await db.poiCategoryStore.deleteCategoryById(category._id);
+          return h.response().code(204);
+        } catch (e) {
+          return Boom.serverUnavailable("Database Error");
         }
-        await db.poiCategoryStore.deleteCategoryById(category._id);
-        return h.response().code(204);
-      } catch (e) {
-        return Boom.serverUnavailable("Database Error");
       }
+      return Boom.forbidden("Insufficient user privileges");
     },
     tags: ["api"],
     description: "Deletes one POICategory",
@@ -89,13 +97,17 @@ export const poiCategoryApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        await db.poiCategoryStore.deleteAllCategories();
-        return h.response().code(204);
-      } catch (e) {
-        console.log(e);
-        return Boom.serverUnavailable("Database Error");
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin) {
+        try {
+          await db.poiCategoryStore.deleteAllCategories();
+          return h.response().code(204);
+        } catch (e) {
+          console.log(e);
+          return Boom.serverUnavailable("Database Error");
+        }
       }
+      return Boom.forbidden("Insufficient user privileges");
     },
     tags: ["api"],
     description: "Deletes all POICategories",
@@ -105,16 +117,20 @@ export const poiCategoryApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        const category = await db.poiCategoryStore.updateCategory(request.params.id, request.payload);
-        if (category) {
-          return h.response(category).code(200);
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin) {
+        try {
+          const category = await db.poiCategoryStore.updateCategory(request.params.id, request.payload);
+          if (category) {
+            return h.response(category).code(200);
+          }
+          return Boom.notFound("No Category with this id");
+        } catch (err) {
+          console.log(err);
+          return Boom.serverUnavailable("Database error");
         }
-        return Boom.notFound("No Category with this id");
-      } catch (err) {
-        console.log(err);
-        return Boom.serverUnavailable("Database error");
       }
+      return Boom.forbidden("Insufficient user privileges");
     },
     tags: ["api"],
     description: "Update one POICategory",

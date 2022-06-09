@@ -13,6 +13,7 @@ export const UserSpec = UserCredentialsSpec.keys({
   firstname: Joi.string().required().example("Jim"),
   lastname: Joi.string().required().example("Halpert"),
   username: Joi.string().required().example("jim123"),
+  isadmin: Joi.boolean(),
 }).label("UserDetails");
 
 export const UserSpecUpdate = UserCredentialsSpec.keys({
@@ -21,6 +22,7 @@ export const UserSpecUpdate = UserCredentialsSpec.keys({
   firstname: Joi.string().example("Jim").optional(),
   lastname: Joi.string().example("Halpert").optional(),
   username: Joi.string().example("jim123").optional(),
+  isadmin: Joi.boolean(),
 }).label("UserDetailsUpdate");
 
 export const UserSpecPlus = UserSpec.keys({
@@ -38,7 +40,8 @@ export const POISpec = Joi.object()
     description: Joi.string().allow("").optional().example("Its a very known music venue with a large stage and place for 3000 people."),
     latitude: Joi.number().min(-90).max(90).required().example(4.23423),
     longitude: Joi.number().min(-180).max(180).required().example(34.23423),
-    categories: Joi.array().items(IdSpec).required(),
+    categories: Joi.alternatives().try(Joi.string(), Joi.array().items(IdSpec)).required(),
+    images: Joi.array().items(Joi.string()).optional(),
     creator: IdSpec.optional(),
   })
   .label("POIDetails");
@@ -49,7 +52,8 @@ export const POISpecUpdate = Joi.object()
     description: Joi.string().allow("").optional().example("Its a very known music venue with a large stage and place for 3000 people."),
     latitude: Joi.number().min(-90).max(90).optional().example(4.23423),
     longitude: Joi.number().min(-180).max(180).optional().example(34.23423),
-    categories: Joi.array().items(IdSpec).optional(),
+    categories: Joi.alternatives().try(Joi.string(), Joi.array().items(IdSpec)).optional(),
+    images: Joi.array().items(Joi.string()).optional(),
     creator: IdSpec,
   })
   .label("POIUpdate");

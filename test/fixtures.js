@@ -15,6 +15,19 @@ export const ryan = {
   username: "ryan321",
   email: "ryan@the-office.com",
   password: "secret",
+  isadmin: true,
+};
+export const adminUser = {
+  firstname: "Admin",
+  lastname: "User",
+  username: "admin",
+  email: "admin@poi-app.com",
+  password: "secret",
+  isadmin: true,
+};
+export const adminCredentials = {
+  email: "admin@poi-app.com",
+  password: "secret",
 };
 export const ryanCredentials = {
   email: "ryan@the-office.com",

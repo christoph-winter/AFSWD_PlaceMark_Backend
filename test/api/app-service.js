@@ -1,4 +1,5 @@
 import axios from "axios";
+import { db } from "../../src/models/db.js";
 
 export const appService = {
   appURL: "http://localhost:4000",
@@ -48,8 +49,8 @@ export const appService = {
     const res = await axios.delete(`${this.appURL}/rest-api/poi/${id}`);
     return res.data;
   },
-  async updatePOI(id, newVars) {
-    const res = await axios.put(`${this.appURL}/rest-api/poi/${id}`, newVars);
+  async updatePOI(id, newValues) {
+    const res = await axios.put(`${this.appURL}/rest-api/poi/${id}`, newValues);
     return res.data;
   },
 
@@ -84,5 +85,9 @@ export const appService = {
   },
   async clearAuth() {
     axios.defaults.headers.common.Authorization = "";
+  },
+  async addAdminUser(user) {
+    db.init();
+    await db.userStore.addUser(user);
   },
 };

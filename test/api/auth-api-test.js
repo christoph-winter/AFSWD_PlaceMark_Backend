@@ -1,13 +1,13 @@
 import { assert } from "chai";
 import { appService } from "./app-service.js";
 import { decodeToken } from "../../src/api/jwt-utils.js";
-import { michael, michaelCredentials, ryan, ryanCredentials } from "../fixtures.js";
+import { adminCredentials, adminUser, michael, michaelCredentials, ryan, ryanCredentials } from "../fixtures.js";
 
 suite("Authentication API tests", async () => {
   setup(async () => {
     await appService.clearAuth();
-    await appService.createUser(ryan);
-    await appService.authenticate(ryanCredentials);
+    await appService.createUser(adminUser);
+    await appService.authenticate(adminCredentials);
     await appService.deleteAllUsers();
   });
   teardown(async () => {

@@ -1,5 +1,7 @@
 import { db } from "../models/db.js";
 import { POISpec } from "../models/joi-schemas.js";
+import { imageStore } from "../models/image-store.js";
+import { testPOICategories } from "../../test/fixtures.js";
 
 export const poiController = {
   index: {
@@ -66,6 +68,7 @@ export const poiController = {
     },
   },
   showEditPOI: {
+    // TODO: EditPOI view
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
       const poiToEdit = await db.poiStore.getPOIById(request.params.id);
@@ -73,6 +76,37 @@ export const poiController = {
         user: loggedInUser,
         poi: poiToEdit,
       });
+    },
+  },
+  uploadImage: {
+    handler: async function (request, h) {
+      const poi = await db.poiStore.getPOIById(request.params.id);
+
+      try {
+        const file = request.payload.imagefile;
+        if (Object.keys(file).length > 0) {
+          const url = await imageStore.uploadImage(request.payload.imagefile);
+          poi.images.push({ src: url });
+          await db.poiStore.updatePOI(request.params.id, { images: poi.images });
+        }
+        return h.redirect(`/dashboard/${poi._id}`);
+      } catch (err) {
+        console.log(err);
+        return h.redirect(`/dashboard/${poi._id}`);
+      }
+    },
+    payload: {
+      multipart: true,
+      output: "data",
+      maxBytes: 209715200,
+      parse: true,
+    },
+  },
+  // TODO: implement delete image
+  deleteImage: {
+    handler: async function (request, h) {
+      try {
+      } catch (e) {}
     },
   },
 };

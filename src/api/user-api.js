@@ -14,6 +14,7 @@ export const userApi = {
           return Boom.unauthorized("User not found");
         }
         if (user.password !== request.payload.password) {
+          console.log("Invalid password");
           return Boom.unauthorized("Invalid password");
         }
 
@@ -34,12 +35,16 @@ export const userApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        const users = await db.userStore.getAllUsers();
-        return h.response(users).code(200);
-      } catch (err) {
-        return Boom.serverUnavailable("Database Error");
+      const loggedInUser = request.auth.credentials;
+      if (loggedInUser.isadmin) {
+        try {
+          const users = await db.userStore.getAllUsers();
+          return h.response(users).code(200);
+        } catch (err) {
+          return Boom.serverUnavailable("Database Error");
+        }
       }
+      return Boom.forbidden("Insufficient user permissions");
     },
     tags: ["api"],
     description: "Get all Users",
@@ -51,15 +56,19 @@ export const userApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        const user = await db.userStore.getUserById(request.params.id);
-        if (!user) {
-          return Boom.notFound("No User with this id");
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin || authenticatedUser.userid.equals(request.params.id)) {
+        try {
+          const user = await db.userStore.getUserById(request.params.id);
+          if (!user) {
+            return Boom.notFound("No User with this id");
+          }
+          return h.response(user).code(200);
+        } catch (err) {
+          return Boom.serverUnavailable("No User with this id");
         }
-        return h.response(user).code(200);
-      } catch (err) {
-        return Boom.serverUnavailable("No User with this id");
       }
+      return Boom.forbidden("Insufficient user permissions");
     },
     tags: ["api"],
     description: "Find a User",
@@ -76,6 +85,8 @@ export const userApi = {
         const usernameAvailable = (await db.userStore.getUserByUsername(user.username)) == null;
         const emailAvailable = (await db.userStore.getUserByEmail(user.email)) == null;
         if (usernameAvailable && emailAvailable) {
+          // IMPORTANT: comment out when testing
+          // if (!user.isadmin) return Boom.forbidden("Insufficient user privileges");
           const addedUser = await db.userStore.addUser(user);
           if (addedUser) return h.response(addedUser).code(201);
           return Boom.badImplementation("Error creating new User");
@@ -100,13 +111,17 @@ export const userApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        await db.userStore.deleteUserById(request.params.id);
-        return h.response().code(204);
-      } catch (err) {
-        console.log(err);
-        return Boom.serverUnavailable("Database Error");
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin || authenticatedUser.userid === request.params.id) {
+        try {
+          await db.userStore.deleteUserById(request.params.id);
+          return h.response().code(204);
+        } catch (err) {
+          console.log(err);
+          return Boom.serverUnavailable("Database Error");
+        }
       }
+      return Boom.forbidden("Insufficient user permissions");
     },
     tags: ["api"],
     description: "Deletes one User",
@@ -117,12 +132,16 @@ export const userApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        await db.userStore.deleteAll();
-        return h.response().code(204);
-      } catch (err) {
-        return Boom.serverUnavailable("Database Error");
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin) {
+        try {
+          await db.userStore.deleteAll();
+          return h.response().code(204);
+        } catch (err) {
+          return Boom.serverUnavailable("Database Error");
+        }
       }
+      return Boom.forbidden("Only a user with admin privileges can delete all users");
     },
     tags: ["api"],
     description: "Deletes all Users",
@@ -132,19 +151,29 @@ export const userApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        const user = request.payload;
-        const usernameAvailable = user.username ? (await db.userStore.getUserByUsername(user.username)) === null : true;
-        const emailAvailable = user.email ? (await db.userStore.getUserByEmail(user.email)) === null : true;
-        const updatedUser = await db.userStore.updateUser(request.params.id, request.payload);
-        if (usernameAvailable && emailAvailable) return h.response(updatedUser).code(200);
-        let errorMsg = "";
-        if (!usernameAvailable) errorMsg = "Username already exists.";
-        if (!emailAvailable) errorMsg = "Email address already in use.";
-        return Boom.conflict(errorMsg);
-      } catch (err) {
-        return Boom.serverUnavailable("Database Error");
+      const authenticatedUser = request.auth.credentials;
+
+      if (authenticatedUser.isadmin || authenticatedUser.userid.equals(request.params.id)) {
+        try {
+          const user = request.payload;
+          const usernameAvailable = user.username ? (await db.userStore.getUserByUsername(user.username)) === null : true;
+          const emailAvailable = user.email ? (await db.userStore.getUserByEmail(user.email)) === null : true;
+          if (!authenticatedUser.isadmin && user.isadmin === true) {
+            return Boom.forbidden("Insufficient user permissions");
+          }
+          if (usernameAvailable && emailAvailable) {
+            const updatedUser = await db.userStore.updateUser(request.params.id, user);
+            return h.response(updatedUser).code(200);
+          }
+          let errorMsg = "";
+          if (!usernameAvailable) errorMsg = "Username already exists.";
+          if (!emailAvailable) errorMsg = "Email address already in use.";
+          return Boom.conflict(errorMsg);
+        } catch (err) {
+          return Boom.serverUnavailable("Database Error");
+        }
       }
+      return Boom.forbidden("Insufficient user permissions");
     },
     tags: ["api"],
     description: "Update one User",

@@ -1,18 +1,18 @@
 import { assert } from "chai";
 import { appService } from "./app-service.js";
-import { arena, michael, michaelCredentials, ryan, ryanCredentials, testPOICategories } from "../fixtures.js";
+import { adminCredentials, adminUser, arena, michael, michaelCredentials, ryan, ryanCredentials, testPOICategories } from "../fixtures.js";
 import { assertSubset } from "../test-utils.js";
 
 const categories = new Array(testPOICategories.length);
 suite("POI Category API tests", () => {
   setup(async () => {
     await appService.clearAuth();
-    await appService.createUser(ryan);
-    await appService.authenticate(ryanCredentials);
+    await appService.createUser(adminUser);
+    await appService.authenticate(adminCredentials);
     await appService.deleteAllCategories();
     await appService.deleteAllUsers();
-    await appService.createUser(michael);
-    await appService.authenticate(michaelCredentials);
+    await appService.createUser(adminUser);
+    await appService.authenticate(adminCredentials);
     for (let i = 0; i < categories.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       categories[i] = await appService.createCategory(testPOICategories[i]);
@@ -67,5 +67,29 @@ suite("POI Category API tests", () => {
     assert.notEqual(returnedCategory.title, categories[1].title);
     const allCategories = await appService.getAllCategories();
     assert.equal(allCategories.length, categories.length);
+  });
+  test("do action unauthorized", async () => {
+    await appService.deleteAllUsers();
+    await appService.clearAuth();
+    await appService.createUser(michael); // michael is not an admin user
+    await appService.authenticate(michaelCredentials);
+    try {
+      await appService.deleteAllUsers();
+      assert.fail();
+    } catch (e) {
+      assert.equal(e.response.data.statusCode, 403);
+    }
+    try {
+      await appService.deleteCategory(categories[0]._id);
+      assert.fail();
+    } catch (e) {
+      assert.equal(e.response.data.statusCode, 403);
+    }
+    try {
+      await appService.updateCategory(categories[0]._id, { title: "Bad Title" });
+      assert.fail();
+    } catch (e) {
+      assert.equal(e.response.data.statusCode, 403);
+    }
   });
 });

@@ -51,9 +51,7 @@ export const poiApi = {
     handler: async function (request, h) {
       try {
         const poi = request.payload;
-        const { creator } = poi;
-        const { categories } = poi;
-        const newPOI = await db.poiStore.addPOI(poi, creator, categories);
+        const newPOI = await db.poiStore.addPOI(poi, poi.creator, poi.categories);
         if (newPOI) {
           return h.response(newPOI).code(201);
         }
@@ -73,13 +71,17 @@ export const poiApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
+      const loggedInUser = request.auth.credentials;
       try {
         const poi = await db.poiStore.getPOIById(request.params.id);
         if (!poi) {
           return Boom.notFound("No POI with this id");
         }
-        await db.poiStore.deletePOIById(poi._id);
-        return h.response().code(204);
+        if (poi.creator === loggedInUser.userid || loggedInUser.isadmin) {
+          await db.poiStore.deletePOIById(poi._id);
+          return h.response().code(204);
+        }
+        return Boom.forbidden("Insufficient user permissions");
       } catch (e) {
         return Boom.serverUnavailable("Database Error");
       }
@@ -93,13 +95,17 @@ export const poiApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      try {
-        await db.poiStore.deleteAll();
-        return h.response().code(204);
-      } catch (e) {
-        console.log(e);
-        return Boom.serverUnavailable("Database Error");
+      const authenticatedUser = request.auth.credentials;
+      if (authenticatedUser.isadmin) {
+        try {
+          await db.poiStore.deleteAll();
+          return h.response().code(204);
+        } catch (e) {
+          console.log(e);
+          return Boom.serverUnavailable("Database Error");
+        }
       }
+      return Boom.forbidden("Insufficient user permissions");
     },
     tags: ["api"],
     description: "Delete all POIs",
@@ -109,13 +115,20 @@ export const poiApi = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
+      const authenticatedUser = request.auth.credentials;
       try {
-        const poi = await db.poiStore.updatePOI(request.params.id, request.payload);
-        if (poi) {
-          return h.response(poi).code(200);
-        }
-        return Boom.notFound("No POI with this id");
+        let poi = await db.poiStore.getPOIById(request.params.id);
+        if (poi.creator || authenticatedUser.isadmin)
+          if (authenticatedUser.isadmin || authenticatedUser.userid.equals(poi.creator._id)) {
+            poi = await db.poiStore.updatePOI(request.params.id, request.payload);
+            if (poi) {
+              return h.response(poi).code(200);
+            }
+            return Boom.notFound("No POI with this id");
+          }
+        return Boom.forbidden("Insufficient user permissions");
       } catch (err) {
+        console.log(err);
         return Boom.serverUnavailable("Database error");
       }
     },
