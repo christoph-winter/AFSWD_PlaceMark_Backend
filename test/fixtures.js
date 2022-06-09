@@ -5,6 +5,34 @@ export const michael = {
   email: "michael@the-office.com",
   password: "secret",
 };
+export const michaelCredentials = {
+  email: "michael@the-office.com",
+  password: "secret",
+};
+export const ryan = {
+  firstname: "Ryan",
+  lastname: "Howard",
+  username: "ryan321",
+  email: "ryan@the-office.com",
+  password: "secret",
+  isadmin: true,
+};
+export const adminUser = {
+  firstname: "Admin",
+  lastname: "User",
+  username: "admin",
+  email: "admin@poi-app.com",
+  password: "secret",
+  isadmin: true,
+};
+export const adminCredentials = {
+  email: "admin@poi-app.com",
+  password: "secret",
+};
+export const ryanCredentials = {
+  email: "ryan@the-office.com",
+  password: "secret",
+};
 export const jahnstadion = {
   title: "Jahnstadion Regensburg",
   description: "Homepage: https://www.jahnstadion-regensburg.de/",
@@ -62,7 +90,7 @@ export const testPOIs = [
   },
   {
     title: "Donau-Arena",
-    description: "",
+    description: "The arena opened in 2001 and holds 4,936 people. It is primarily used for ice hockey.",
     latitude: 48.99097490003941,
     longitude: 12.107298727065935,
   },

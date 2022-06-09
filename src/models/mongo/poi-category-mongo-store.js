@@ -1,4 +1,5 @@
 import { POICategory } from "./poi-category.js";
+import { POI } from "./poi.js";
 
 export const POICategoryMongoStore = {
   async getAllCategories() {
@@ -11,7 +12,7 @@ export const POICategoryMongoStore = {
       const category = await POICategory.findOne({ _id: id }).lean();
       return category;
     } catch (e) {
-      console.log("bad id");
+      console.log(e.message);
     }
     return null;
   },
@@ -20,7 +21,7 @@ export const POICategoryMongoStore = {
       const category = await POICategory.findOne({ title: title }).lean();
       return category;
     } catch (e) {
-      console.log("bad id");
+      console.log(e.message);
     }
     return null;
   },
@@ -30,18 +31,22 @@ export const POICategoryMongoStore = {
     const categoryObj = await newCategory.save();
     return this.getCategoryById(categoryObj._id);
   },
+  async updateCategory(id, newValues) {
+    const category = await POICategory.findOneAndUpdate({ _id: id }, { $set: newValues }, { new: true, upsert: false });
+    return category;
+  },
   async updateCategoryDescription(id, description) {
     try {
       await POICategory.updateOne({ _id: id }, { description: description });
     } catch (e) {
-      console.log("bad id");
+      console.log(e.message);
     }
   },
   async deleteCategoryById(id) {
     try {
       await POICategory.deleteOne({ _id: id });
     } catch (error) {
-      console.log("bad id");
+      console.log(error.message);
     }
   },
 
