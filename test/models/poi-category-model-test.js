@@ -1,21 +1,17 @@
 import { assert } from "chai";
 import { db } from "../../src/models/db.js";
-import { arena, testPOICategories } from "../fixtures.js";
+import { arena, jahnstadion, testPOICategories, testPOIs } from "../fixtures.js";
 import { assertSubset } from "../test-utils.js";
 
 suite("POI Category Model tests", () => {
   setup(async () => {
     db.init();
+    await db.poiCategoryStore.delete;
     await db.poiCategoryStore.deleteAllCategories();
     for (let i = 0; i < testPOICategories.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       testPOICategories[i] = await db.poiCategoryStore.addCategory(testPOICategories[i]);
     }
-  });
-
-  test("create a Category", async () => {
-    const newCategory = await db.poiCategoryStore.addCategory(arena);
-    assertSubset(newCategory, arena);
   });
   test("delete all Categories", async () => {
     let returnedCategories = await db.poiCategoryStore.getAllCategories();
@@ -24,6 +20,11 @@ suite("POI Category Model tests", () => {
     returnedCategories = await db.poiCategoryStore.getAllCategories();
     assert.equal(returnedCategories.length, 0);
   });
+  test("create a Category", async () => {
+    const newCategory = await db.poiCategoryStore.addCategory(arena);
+    assertSubset(newCategory, arena);
+  });
+
   test("get a Category - success", async () => {
     const POICategory = await db.poiCategoryStore.addCategory(arena);
     let returnedPOICategory = await db.poiCategoryStore.getCategoryById(POICategory._id);
@@ -52,5 +53,24 @@ suite("POI Category Model tests", () => {
     await db.poiCategoryStore.updateCategoryDescription(newCategory._id, newDesc);
     const returnedCategory = await db.poiCategoryStore.getCategoryById(newCategory._id);
     assert.equal(returnedCategory.description, newDesc);
+  });
+  test("update One POI Category (2) - success", async () => {
+    const updatedTitle = "new test title";
+    const updatedDesc = "new test description";
+    const returnedCategory = await db.poiCategoryStore.updateCategory(testPOICategories[0], { description: updatedDesc, title: updatedTitle });
+    assert.deepEqual(returnedCategory.description, updatedDesc);
+    assert.deepEqual(returnedCategory.title, updatedTitle);
+    const allCategories = await db.poiCategoryStore.getAllCategories();
+    assert.equal(testPOICategories.length, allCategories.length);
+  });
+  test("update One POI Category (2) - failure", async () => {
+    const newCategory = await db.poiCategoryStore.addCategory(arena);
+    await db.poiCategoryStore.deleteCategoryById(newCategory._id);
+    const updatedTitle = "new test title";
+    const updatedDesc = "new test description";
+    const returnedCategory = await db.poiCategoryStore.updateCategory(newCategory._id, { description: updatedDesc, title: updatedTitle });
+    const allCategories = await db.poiCategoryStore.getAllCategories();
+    assert.equal(testPOICategories.length, allCategories.length);
+    assert.isNull(returnedCategory);
   });
 });

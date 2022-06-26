@@ -1,0 +1,43 @@
+{{#each users}}
+    <div class="box box-link-hover-shadow">
+        <h4 class="title">
+            {{firstname}} {{lastname}}
+        </h4>
+        <div class="columns">
+            <div class="column">
+                <p class="title is-6">Username:</p>
+
+                {{username}}
+
+            </div>
+        </div>
+        <div class="columns mt-2">
+            <div class="column">
+                <p class="title is-6">Email:</p>
+                {{email}}
+            </div>
+        </div>
+        <div class = "columns">
+        <div class="column">
+        {{#if isadmin}}
+
+
+
+                    <p class="title is-5" style="color: red">ADMIN USER</p>
+
+
+
+        {{else}}
+            <form action="/admindashboard/setadmin/{{_id}}" method="POST"><button class="button is-info">Set Admin</button></form>
+        {{/if}}
+        </div>
+            <div class = "column">
+                <form action="/admindashboard/deleteuser/{{_id}}" method="POST"><button class="button is-danger">Delete User</button></form>
+            </div>
+        </div>
+
+    </div>
+
+
+
+{{/each}}

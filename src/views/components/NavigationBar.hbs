@@ -12,34 +12,19 @@
             <span aria-hidden="true"></span>
         </a>
     </div>
-    <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-menu">
         <div class="navbar-start">
             <a class="navbar-item" href="/dashboard">
                 Venues
             </a>
-
-            <a class="navbar-item" href="/dashboard/addvenue">
-                Add New Venue
-            </a>
-
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">
-                    More
+            {{# if user.isadmin}}
+                <a class="navbar-item" href="/admindashboard">
+                    Admin Dashboard
                 </a>
-
-                <div class="navbar-dropdown">
-                    <a class="navbar-item" href="/profile">
-                        Profile
-                    </a>
-                    <a class="navbar-item">
-                        About
-                    </a>
-                    <hr class="navbar-divider">
-                    <a class="navbar-item">
-                        Report an issue
-                    </a>
-                </div>
-            </div>
+            {{/if}}
+            <a class="navbar-item" href="/profile">
+                Profile
+            </a>
         </div>
 
     <div class="navbar-end">

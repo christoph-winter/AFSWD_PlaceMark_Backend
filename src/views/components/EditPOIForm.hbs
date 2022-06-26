@@ -1,12 +1,12 @@
-<form action="/dashboard/addvenue" method="POST">
+<form action="/dashboard/{{poi._id}}" method="PUT">
     <div class="field">
         <label class="label">Venue Name</label>
-        <input class="input" type="text" placeholder="Enter name of venue..." name="title">
+        <input class="input" type="text" value="{{poi.title}}" name="title">
     </div>
     <div class="field">
         <label class="label">Description</label>
         <div class="control">
-            <textarea name="description" class="textarea" placeholder="Enter description..."></textarea>
+            <textarea name="description" class="textarea" value="{{poi.description}}"></textarea>
         </div>
     </div>
     <div class="field is-horizontal">
@@ -14,7 +14,7 @@
             <div class="field">
                 <label class="label">Latitude</label>
                 <p class="control has-icons-left">
-                    <input name="latitude" class="input" type="text" placeholder="Latitude...">
+                    <input name="latitude" class="input" type="text" value="{{poi.latitude}}">
                     <span class="icon is-small is-left">
                 <i class="fa-solid fa-location-crosshairs"></i>
             </span>
@@ -23,7 +23,7 @@
             <div class="field">
                 <label class="label">Longitude</label>
                 <p class="control has-icons-left">
-                    <input name="longitude" class="input" type="text" placeholder="Longitude...">
+                    <input name="longitude" class="input" type="text" value="{{poi.longitude}}">
                     <span class="icon is-small is-left">
                         <i class="fa-solid fa-location-crosshairs"></i>
                     </span>
@@ -43,5 +43,19 @@
             </div>
         </div>
     </div>
-    <button class="button is-link">Add Venue</button>
+    <button class="button is-link">Edit Venue</button>
+
+    {{#if error}}
+        <div id="errorBox" class="notification is-danger">
+            <button class="delete" type="button"
+                    onclick="document.getElementById('errorBox').style.display='none'"></button>
+            Incorrect input.
+            <ul>
+                {{#each error.details}}
+                    <li>{{message}}</li>
+                {{/each}}
+            </ul>
+
+        </div>
+    {{/if}}
 </form>

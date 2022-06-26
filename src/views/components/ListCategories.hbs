@@ -1,0 +1,53 @@
+<div class="box box-link-hover-shadow">
+    <p class="title is-4">Categories</p>
+
+    <table class="table">
+        <thead>
+        <th class ="is-size-5 has-text-weight-bold is-uppercase is-underlined">Title</th>
+        <th class ="is-size-5 has-text-weight-bold is-uppercase is-underlined">Description</th>
+        </thead>
+    {{#each categories}}
+    <tbody>
+    <tr>
+        <td>
+        <p class ="is-size-6 has-text-weight-bold">{{title}}</p>
+        </td>
+        <td>
+        <p>{{description}}</p>
+        </td>
+    </tr>
+    </tbody>
+    {{/each}}
+    </table>
+    <form class="mt-20" action="/admindashboard/addcategory" method="POST">
+        <div class="field is-horizontal">
+            <div class="field-body">
+                <div class="field">
+                    <label for="title" class="label">Title</label>
+                    <input class="input" id="title" type="text" placeholder="Enter title" name="title">
+                </div>
+                <div class="field">
+                    <label for="description" class="label">Description </label>
+                    <input class="input" id="description" type="text" placeholder="Enter description" name="description">
+                </div>
+
+            </div>
+        </div>
+        <button class="button is-danger">Add new Category</button>
+
+    </form>
+
+    {{#if error}}
+        <div id="errorBox" class="notification is-danger">
+            <button class="delete" type="button"
+                    onclick="document.getElementById('errorBox').style.display='none'"></button>
+            Incorrect input.
+            <ul>
+                {{#each error.details}}
+                    <li>{{message}}</li>
+                {{/each}}
+            </ul>
+
+        </div>
+    {{/if}}
+</div>

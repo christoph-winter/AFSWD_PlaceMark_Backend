@@ -8,5 +8,9 @@ const userSchema = new Schema({
   username: String,
   email: String,
   password: String,
+  isadmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 export const User = Mongoose.model("User", userSchema);
