@@ -9,6 +9,7 @@ export function createToken(user) {
     id: user._id,
     email: user.email,
     username: user.username,
+    isadmin: user.isadmin,
   };
   const options = {
     algorithm: "HS256",
@@ -24,6 +25,7 @@ export function decodeToken(token) {
     userInfo.userId = decoded.id;
     userInfo.email = decoded.email;
     userInfo.username = decoded.username;
+    userInfo.isadmin = decoded.isadmin;
   } catch (e) {
     console.log(e.message);
   }

@@ -7,7 +7,10 @@
         }
     };
 </script>
+
 <div class="card">
+    <h2 class="title">Images</h2>
+    <div class="level">
     {{#each poi.images}}
     <div class="card-image">
         <figure class="image is-256x256">
@@ -17,6 +20,7 @@
         </figure>
     </div>
     {{/each}}
+    </div>
     <div class="card-content">
         <form action="/dashboard/{{poi._id}}/uploadimage" method="POST" enctype="multipart/form-data">
             <div id="file-select" class="file has-name is-fullwidth">

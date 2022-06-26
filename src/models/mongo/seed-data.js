@@ -15,6 +15,14 @@ export const seedData = {
       email: "dwight@the-office.com",
       password: "secret",
     },
+    adminuser: {
+      firstname: "Admin",
+      lastname: "User",
+      username: "adminUser",
+      email: "admin@admin.com",
+      password: "secret",
+      isadmin: true,
+    },
     jim: {
       firstname: "Jim",
       lastname: "Halpert",
@@ -52,6 +60,11 @@ export const seedData = {
       longitude: 12.107298727065935,
       categories: ["->categories.sportsstadium"],
       creator: "->users.jim",
+      images: [
+        { src: "http://res.cloudinary.com/dwbvogx2i/image/upload/v1655420216/jaqwgkqsquliulkw8auo.jpg" },
+        { src: "http://res.cloudinary.com/dwbvogx2i/image/upload/v1655420226/vfw7ailjnqzoqdbfme56.jpg" },
+        { src: "http://res.cloudinary.com/dwbvogx2i/image/upload/v1655420289/uhqhu6vmtvm5mnqhsv3v.jpg" },
+      ],
     },
     elbphilharmonie: {
       title: "Elbphilharmonie",
@@ -61,6 +74,10 @@ export const seedData = {
       longitude: 9.984130782758227,
       categories: ["->categories.concerthall", "->categories.musicvenue"],
       creator: "->users.michael",
+      images: [
+        { src: "http://res.cloudinary.com/dwbvogx2i/image/upload/v1655421204/uspp5si4ebzv8etsmidt.jpg" },
+        { src: "http://res.cloudinary.com/dwbvogx2i/image/upload/v1655421210/vu2i0zfy0i3qtgi2k1yo.jpg" },
+      ],
     },
   },
 };

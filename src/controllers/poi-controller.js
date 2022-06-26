@@ -1,7 +1,6 @@
 import { db } from "../models/db.js";
 import { POISpec } from "../models/joi-schemas.js";
 import { imageStore } from "../models/image-store.js";
-import { testPOICategories } from "../../test/fixtures.js";
 
 export const poiController = {
   index: {
@@ -18,11 +17,11 @@ export const poiController = {
       const POIs = await db.poiStore.getAllPOIs();
       if (loggedInUser) {
         // only creator or admin can edit an POI
-        // TODO: Check if user is admin
         POIs.forEach((current) => {
-          console.log(current.creator._id);
-          if (current.creator._id.equals(loggedInUser.id)) current.iseditable = true;
-          else current.iseditable = false;
+          if (current.creator) {
+            if (current.creator._id.equals(loggedInUser.id) || loggedInUser.isadmin) current.iseditable = true;
+            else current.iseditable = false;
+          } else current.iseditable = false;
         });
         console.log(POIs);
       }
@@ -63,19 +62,38 @@ export const poiController = {
         longitude: request.payload.longitude,
       };
       const newDBPOI = await db.poiStore.addPOI(newPOI, loggedInUser.id, request.payload.categories);
-      console.log(newDBPOI);
       return h.redirect("/dashboard");
     },
   },
   showEditPOI: {
-    // TODO: EditPOI view
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
       const poiToEdit = await db.poiStore.getPOIById(request.params.id);
+      const allCategories = await db.poiCategoryStore.getAllCategories();
+      console.log(poiToEdit);
       return h.view("EditPOI", {
         user: loggedInUser,
         poi: poiToEdit,
+        categories: allCategories,
       });
+    },
+  },
+  editPOI: {
+    validate: {
+      payload: POISpec,
+      options: { abortEarly: false },
+      failAction: async function (request, h, error) {
+        return h
+          .view("EditPOI", { error: { details: error.details } })
+          .takeover()
+          .code(400);
+      },
+    },
+    handler: async function (request, h) {
+      const loggedInUser = request.auth.credentials;
+      const poiToEdit = await db.poiStore.getPOIById(request.params.id);
+      await db.poiStore.updatePOI(request.payload);
+      return h.redirect(`/dashboard/${request.params.id}`);
     },
   },
   uploadImage: {
@@ -106,7 +124,13 @@ export const poiController = {
   deleteImage: {
     handler: async function (request, h) {
       try {
-      } catch (e) {}
+        const poi = await db.poiStore.getPOIById(request.params.id);
+        const img = request.params.imgid;
+        console.log(poi);
+        console.log(img);
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };

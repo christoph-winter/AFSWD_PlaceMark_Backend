@@ -32,6 +32,13 @@ export const UserSpecPlus = UserSpec.keys({
   .unknown(true)
   .label("UserDetailsPlus");
 
+export const ImageSpec = Joi.object()
+  .keys({
+    src: Joi.string().optional().example("http://res.cloudinary.com/exampleimage"),
+  })
+  .unknown(true)
+  .label("ImageDetails");
+
 export const UserArraySpec = Joi.array().items(UserSpecPlus).label("UserArray");
 
 export const POISpec = Joi.object()
@@ -41,8 +48,8 @@ export const POISpec = Joi.object()
     latitude: Joi.number().min(-90).max(90).required().example(4.23423),
     longitude: Joi.number().min(-180).max(180).required().example(34.23423),
     categories: Joi.alternatives().try(Joi.string(), Joi.array().items(IdSpec)).required(),
-    images: Joi.array().items(Joi.string()).optional(),
-    creator: IdSpec.optional(),
+    images: Joi.array().items(ImageSpec).optional(),
+    creator: Joi.alternatives().try(null, IdSpec, UserSpecPlus).optional(),
   })
   .label("POIDetails");
 
@@ -54,7 +61,7 @@ export const POISpecUpdate = Joi.object()
     longitude: Joi.number().min(-180).max(180).optional().example(34.23423),
     categories: Joi.alternatives().try(Joi.string(), Joi.array().items(IdSpec)).optional(),
     images: Joi.array().items(Joi.string()).optional(),
-    creator: IdSpec,
+    creator: Joi.alternatives().try(IdSpec).optional(),
   })
   .label("POIUpdate");
 

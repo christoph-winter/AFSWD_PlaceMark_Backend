@@ -1,5 +1,5 @@
 import { db } from "../models/db.js";
-import { UserCredentialsSpec, UserSpec } from "../models/joi-schemas.js";
+import { UserCredentialsSpec, UserSpec, UserSpecUpdate } from "../models/joi-schemas.js";
 
 export const accountsController = {
   index: {
@@ -98,12 +98,42 @@ export const accountsController = {
       return h.redirect("/profile");
     },
   },
+  updateUser: {
+    auth: false,
+    validate: {
+      payload: UserSpecUpdate,
+      options: { abortEarly: false },
+      failAction: function (request, h, error) {
+        console.log({ message: error.details });
+        return h
+          .view("Profile", { error: { details: error.details } })
+          .takeover()
+          .code(400);
+      },
+    },
+    handler: async function (request, h) {
+      const user = request.payload;
+      const usernameAvailable = (await db.userStore.getUserByUsername(user.username)) == null;
+      const emailAvailable = (await db.userStore.getUserByEmail(user.email)) == null;
+      if (usernameAvailable && emailAvailable) {
+        const addedUser = await db.userStore.updateUser(user);
+        return h.redirect("/dashboard");
+      }
+      let errorMsg = "";
+      if (!usernameAvailable) errorMsg = "Username already exists";
+      if (!emailAvailable) errorMsg = "Email address already in use";
+      console.log([{ message: errorMsg }]);
+      return h
+        .view("Profile", { error: { details: [{ message: errorMsg }] } })
+        .takeover()
+        .code(400);
+    },
+  },
   async validate(request, session) {
     const user = await db.userStore.getUserById(session.id);
-    // TODO: admin account. Check if admin.
     if (!user) {
       return { valid: false };
     }
-    return { valid: true, credentials: { id: user._id, username: user.username, email: user.email, firstname: user.firstname, lastname: user.lastname } };
+    return { valid: true, credentials: { id: user._id, username: user.username, email: user.email, firstname: user.firstname, lastname: user.lastname, isadmin: user.isadmin } };
   },
 };

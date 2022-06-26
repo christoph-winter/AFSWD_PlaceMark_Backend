@@ -4,7 +4,6 @@ import { IdSpec, POIArraySpec, POISpec, POISpecPlus, POISpecUpdate } from "../mo
 import { validationErrorInput, validationErrorOutput } from "./logger.js";
 
 export const poiApi = {
-  // TODO: securing api
   find: {
     auth: {
       strategy: "jwt",
