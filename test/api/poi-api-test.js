@@ -113,7 +113,6 @@ suite("POI API tests", () => {
     const poiInput = jahnstadion;
     poiInput.categories = [arenaCategory._id];
     poiInput.creator = user._id;
-    console.log(poiInput);
     const newPOI = await appService.createPOI(poiInput);
     await appService.updatePOI(newPOI._id, { title: "hello world" });
   });

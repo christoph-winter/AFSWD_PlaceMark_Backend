@@ -1,38 +1,39 @@
-<form action="/profile/updateuser/{{user._id}}" method="POST">
+<form action="/profile/updateuser" method="POST">
     <div class="field is-horizontal">
         <div class="field-body">
             <div class="field">
                 <label for="firstname" class="label">First Name</label>
                 <p></p>
-                <input class="input" id="firstname" type="text" placeholder="Enter first name" name="firstname">
+                <input class="input" id="firstname" type="text" value="{{user.firstname}}" name="firstname">
             </div>
             <div class="field">
                 <label for="lastname" class="label">Last Name </label>
-                <input class="input" id="lastname" type="text" placeholder="Enter last name" name="lastname">
+                <input class="input" id="lastname" type="text" value="{{user.lastname}}" name="lastname">
             </div>
         </div>
     </div>
     <div class="field">
         <label for="email" class="label">Email</label>
-        <input class="input" id="email" type="text" value="Enter email" name="email">
+        <input class="input" id="email" type="text" value="{{user.email}}" name="email">
     </div>
     <div class="field">
         <label for="username" class="label">Username</label>
-        <input class="input" id="username" type="text" placeholder="Choose username" name="username">
+        <input class="input" id="username" type="text" value="{{user.username}}" name="username">
+    </div>
+    <div class="field is-grouped">
+        <button class="button is-info">Change Details</button>
     </div>
     <div class="field">
         <label for="password" class="label">Password</label>
-        <input class="input" id="password"type="password" placeholder="Enter Password" name="password">
+        <a href="/profile/changepassword" class="button is-info">Change Password</a>
     </div>
-    <div class="field is-grouped">
-        <button class="button is-link">Sign Up</button>
-    </div>
+
 
     {{#if error}}
         <div id="errorBox" class="notification is-danger">
             <button class="delete" type="button"
                     onclick="document.getElementById('errorBox').style.display='none'"></button>
-            Sign up failed!
+            Error changing user details!
             <ul>
                 {{#each error.details}}
                     <li>{{message}}</li>
