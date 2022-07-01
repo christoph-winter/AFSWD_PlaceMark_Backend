@@ -17,6 +17,37 @@ export const adminController = {
       return h.response().code(404);
     },
   },
+  adminAnalytics: {
+    handler: async function (request, h) {
+      const categories = await db.poiCategoryStore.getAllCategories();
+      const users = await db.userStore.getAllUsers();
+      const loggedInUser = request.auth.credentials;
+      const creators = [];
+      const categoryCount = categories.map((item) => ({ title: item.title, count: 0 }));
+      const pois = await db.poiStore.getAllPOIs();
+      pois.forEach((poi) => {
+        if (poi.creator) {
+          if (!creators.includes(poi.creator._id)) creators.push(poi.creator._id);
+        }
+        if (poi.categories) {
+          poi.categories.forEach((category) => {
+            // eslint-disable-next-line array-callback-return
+            categoryCount.find((o, i) => {
+              if (o.title === category.title) {
+                categoryCount[i].count += 1;
+              }
+            });
+          });
+        }
+      });
+      return h.view("AdminAnalytics", {
+        countCreators: creators.length,
+        countUsers: users.length,
+        user: loggedInUser,
+        categoryCount: categoryCount,
+      });
+    },
+  },
   addCategory: {
     validate: {
       payload: POICategorySpec,

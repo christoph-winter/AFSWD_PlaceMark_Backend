@@ -87,46 +87,42 @@ export const accountsController = {
   },
   profile: {
     handler: function (request, h) {
-      // TODO: profile page. account settings.
       const loggedInUser = request.auth.credentials;
+      console.log(request.auth.credentials);
       return h.view("Profile", { user: loggedInUser });
     },
   },
-  editAccount: {
+  showChangePassword: {
     handler: function (request, h) {
       const loggedInUser = request.auth.credentials;
-      return h.redirect("/profile");
+      return h.view("ChangePassword", { user: loggedInUser });
     },
   },
   updateUser: {
-    auth: false,
     validate: {
       payload: UserSpecUpdate,
       options: { abortEarly: false },
       failAction: function (request, h, error) {
-        console.log({ message: error.details });
+        const loggedInUser = request.auth.credentials;
         return h
-          .view("Profile", { error: { details: error.details } })
+          .view("Profile", { error: { details: [{ message: error }] }, user: loggedInUser })
           .takeover()
           .code(400);
       },
     },
     handler: async function (request, h) {
       const user = request.payload;
-      const usernameAvailable = (await db.userStore.getUserByUsername(user.username)) == null;
-      const emailAvailable = (await db.userStore.getUserByEmail(user.email)) == null;
-      if (usernameAvailable && emailAvailable) {
-        const addedUser = await db.userStore.updateUser(user);
+      const loggedInUser = request.auth.credentials;
+      try {
+        const addedUser = await db.userStore.updateUser(loggedInUser.id, user);
         return h.redirect("/dashboard");
+      } catch (e) {
+        console.log(e);
+        return h
+          .view("Profile", { error: { details: e.details }, user: loggedInUser })
+          .takeover()
+          .code(400);
       }
-      let errorMsg = "";
-      if (!usernameAvailable) errorMsg = "Username already exists";
-      if (!emailAvailable) errorMsg = "Email address already in use";
-      console.log([{ message: errorMsg }]);
-      return h
-        .view("Profile", { error: { details: [{ message: errorMsg }] } })
-        .takeover()
-        .code(400);
     },
   },
   async validate(request, session) {

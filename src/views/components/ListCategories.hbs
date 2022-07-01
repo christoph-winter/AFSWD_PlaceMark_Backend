@@ -3,21 +3,21 @@
 
     <table class="table">
         <thead>
-        <th class ="is-size-5 has-text-weight-bold is-uppercase is-underlined">Title</th>
-        <th class ="is-size-5 has-text-weight-bold is-uppercase is-underlined">Description</th>
+        <th class="is-size-5 has-text-weight-bold is-uppercase is-underlined">Title</th>
+        <th class="is-size-5 has-text-weight-bold is-uppercase is-underlined">Description</th>
         </thead>
-    {{#each categories}}
-    <tbody>
-    <tr>
-        <td>
-        <p class ="is-size-6 has-text-weight-bold">{{title}}</p>
-        </td>
-        <td>
-        <p>{{description}}</p>
-        </td>
-    </tr>
-    </tbody>
-    {{/each}}
+        {{#each categories}}
+            <tbody>
+            <tr>
+                <td>
+                    <p class="is-size-6 has-text-weight-bold">{{title}}</p>
+                </td>
+                <td>
+                    <p>{{description}}</p>
+                </td>
+            </tr>
+            </tbody>
+        {{/each}}
     </table>
     <form class="mt-20" action="/admindashboard/addcategory" method="POST">
         <div class="field is-horizontal">
@@ -28,7 +28,8 @@
                 </div>
                 <div class="field">
                     <label for="description" class="label">Description </label>
-                    <input class="input" id="description" type="text" placeholder="Enter description" name="description">
+                    <input class="input" id="description" type="text" placeholder="Enter description"
+                           name="description">
                 </div>
 
             </div>

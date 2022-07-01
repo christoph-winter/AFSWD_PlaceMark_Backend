@@ -17,9 +17,9 @@
                 {{email}}
             </div>
         </div>
-        <div class = "columns">
-        <div class="column">
-        {{#if isadmin}}
+        <div class="columns">
+            <div class="column">
+                {{#if isadmin}}
 
 
 
@@ -27,12 +27,16 @@
 
 
 
-        {{else}}
-            <form action="/admindashboard/setadmin/{{_id}}" method="POST"><button class="button is-info">Set Admin</button></form>
-        {{/if}}
-        </div>
-            <div class = "column">
-                <form action="/admindashboard/deleteuser/{{_id}}" method="POST"><button class="button is-danger">Delete User</button></form>
+                {{else}}
+                    <form action="/admindashboard/setadmin/{{_id}}" method="POST">
+                        <button class="button is-info">Set Admin</button>
+                    </form>
+                {{/if}}
+            </div>
+            <div class="column">
+                <form action="/admindashboard/deleteuser/{{_id}}" method="POST">
+                    <button class="button is-danger">Delete User</button>
+                </form>
             </div>
         </div>
 

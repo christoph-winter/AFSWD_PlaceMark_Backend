@@ -1,0 +1,29 @@
+<div class="box">
+    {{> NavigationBar}}
+</div>
+
+<div class="box">
+    <div class="columns">
+        <div class="column">
+            <p><strong>Total Number of Users:</strong> {{countUsers}} </p>
+            <p><strong> Number of contributing users: </strong> {{countCreators}}</p>
+        </div>
+        <div class="column">
+            <h4 class="title is-6">Number of Venues per Category</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td> Category</td>
+                    <td> Number of POIs</td>
+                </tr>
+                </thead>
+                {{#each categoryCount}}
+                    <tbody>
+                    <td><strong>{{title}}</strong></td>
+                    <td><strong>{{count}}</strong></td>
+                    </tbody>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+</div>

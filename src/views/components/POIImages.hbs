@@ -11,20 +11,21 @@
 <div class="card">
     <h2 class="title">Images</h2>
     <div class="level">
-    {{#each poi.images}}
-    <div class="card-image">
-        <figure class="image is-256x256">
+        {{#each poi.images}}
+            <div class="card-image">
+                <figure class="image is-256x256">
 
-            <img src={{src}}>
+                    <img src={{src}}>
 
-        </figure>
-    </div>
-    {{/each}}
+                </figure>
+            </div>
+        {{/each}}
     </div>
     <div class="card-content">
         <form action="/dashboard/{{poi._id}}/uploadimage" method="POST" enctype="multipart/form-data">
             <div id="file-select" class="file has-name is-fullwidth">
-                <label class="file-label"> <input class="file-input" name="imagefile" type="file" name="resume" accept="image/png, image/jpeg">
+                <label class="file-label"> <input class="file-input" name="imagefile" type="file" name="resume"
+                                                  accept="image/png, image/jpeg">
                     <span class="file-cta">
             <span class="file-icon">
               <i class="fas fa-upload"></i>

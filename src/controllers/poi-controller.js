@@ -7,7 +7,6 @@ export const poiController = {
     auth: false,
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
-      // TODO: Welcome Page
       return h.view("Welcome", { user: loggedInUser });
     },
   },
@@ -23,7 +22,6 @@ export const poiController = {
             else current.iseditable = false;
           } else current.iseditable = false;
         });
-        console.log(POIs);
       }
       return h.view("Dashboard", {
         user: loggedInUser,
@@ -70,7 +68,6 @@ export const poiController = {
       const loggedInUser = request.auth.credentials;
       const poiToEdit = await db.poiStore.getPOIById(request.params.id);
       const allCategories = await db.poiCategoryStore.getAllCategories();
-      console.log(poiToEdit);
       return h.view("EditPOI", {
         user: loggedInUser,
         poi: poiToEdit,
@@ -83,8 +80,11 @@ export const poiController = {
       payload: POISpec,
       options: { abortEarly: false },
       failAction: async function (request, h, error) {
+        const loggedInUser = request.auth.credentials;
+        const poiToEdit = await db.poiStore.getPOIById(request.params.id);
+        const allCategories = await db.poiCategoryStore.getAllCategories();
         return h
-          .view("EditPOI", { error: { details: error.details } })
+          .view("EditPOI", { error: { details: error.details }, user: loggedInUser, poi: poiToEdit, categories: allCategories })
           .takeover()
           .code(400);
       },
@@ -92,8 +92,17 @@ export const poiController = {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
       const poiToEdit = await db.poiStore.getPOIById(request.params.id);
-      await db.poiStore.updatePOI(request.payload);
-      return h.redirect(`/dashboard/${request.params.id}`);
+      const allCategories = await db.poiCategoryStore.getAllCategories();
+      try {
+        await db.poiStore.updatePOI(request.params.id, request.payload);
+        return h.redirect("/dashboard");
+      } catch (err) {
+        console.log(err);
+        return h
+          .view("EditPOI", { error: { details: err.details }, user: loggedInUser, poi: poiToEdit, categories: allCategories })
+          .takeover()
+          .code(400);
+      }
     },
   },
   uploadImage: {
